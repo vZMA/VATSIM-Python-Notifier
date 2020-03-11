@@ -15,7 +15,7 @@ from discord_webhook import DiscordWebhook, DiscordEmbed
 k_topic = 'datafeed'
 k_servers = 'kafka-datafeed.vatsim.net:9092'
 load_dotenv()
-webhookurl = os.getenv('https://discordapp.com/api/webhooks/687350322326405199/PTFFycoZN7q4VPp1pOvxqkgZn2RRoktQN6V6wVjrNqPBRbNaT0f89wLlxcu8_GmdVx-O')
+webhookurl = 'https://discordapp.com/api/webhooks/687350322326405199/PTFFycoZN7q4VPp1pOvxqkgZn2RRoktQN6V6wVjrNqPBRbNaT0f89wLlxcu8_GmdVx-O'
 global rating_long
 # Check message filter here to meet last 4 characters of what to eval in add_clients / remove_clients
 messagefilter = ['_CTR', '_APP', '_DEP', '_TWR', '_GND', '_DEL', '_FSS']
