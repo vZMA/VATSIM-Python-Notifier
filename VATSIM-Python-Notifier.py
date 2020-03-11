@@ -1,6 +1,6 @@
 # Script created to evaluate VATSIM network logins and logouts to relay to Discord bots
 # Written by: Aaron Albertson
-# ©2020 Aaron Albertson
+# Copywritten - 2020 Aaron Albertson
 # Version: 1.0 - 3/10/2020
 
 import json
