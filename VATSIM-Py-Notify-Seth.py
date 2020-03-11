@@ -25,6 +25,7 @@ messagefilter = ['_CTR', '_APP', '_DEP', '_TWR', '_GND', '_DEL', '_FSS']
 def discord_webhook(callsign, name, cid, rating_long, server, status):
 
     webhook = DiscordWebhook(url=webhookurl)
+    timestamp = str(datetime.now())
 
     if status == "online":
         embed = DiscordEmbed(title=callsign + " - Online", color=65290)
@@ -101,6 +102,7 @@ def vatsim_notifier():
     print("[" + timestamp + "] - Notifer Started!")
     # Evaluate results for callsign sign in and outs. FOR LOOP
     for message in consumer:
+        timestamp = str(datetime.now())
         message = message.value
         data = message['data']
         if message['message_type'] == 'add_client':
