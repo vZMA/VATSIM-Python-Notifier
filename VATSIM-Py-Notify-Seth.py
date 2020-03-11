@@ -27,7 +27,7 @@ def discord_webhook(callsign, name, cid, rating_long, server, status):
     webhook = DiscordWebhook(url=webhookurl)
 
     if status == "online":
-        embed = DiscordEmbed(title=callsign + " - Online", description=callsign + ' is now online on the VATSIM network.', color=65290)
+        embed = DiscordEmbed(title=callsign + " - Online", color=65290)
         embed.set_footer(text='ZDC VATSIM Notify Bot', icon_url='https://vzdc.org/photos/discordbot.png')
         # embed.set_thumbnail(url='https://vzdc.org/photos/logo.png')
         embed.set_timestamp()
