@@ -15,10 +15,10 @@ from discord_webhook import DiscordWebhook, DiscordEmbed
 k_topic = 'datafeed'
 k_servers = 'kafka-datafeed.vatsim.net:9092'
 load_dotenv()
-webhookurl = os.getenv('')
+webhookurl = os.getenv('https://discordapp.com/api/webhooks/687350322326405199/PTFFycoZN7q4VPp1pOvxqkgZn2RRoktQN6V6wVjrNqPBRbNaT0f89wLlxcu8_GmdVx-O')
 global rating_long
-# Check message filter here to meet first 4 characters of what to eval in add_clients / remove_clients
-messagefilter = ['_CTR', '_APP', '_DEP', '_TWR', '_GND', '_DEL']
+# Check message filter here to meet last 4 characters of what to eval in add_clients / remove_clients
+messagefilter = ['_CTR', '_APP', '_DEP', '_TWR', '_GND', '_DEL', '_FSS']
 # Defs
 
 
@@ -105,12 +105,12 @@ def vatsim_notifier():
         data = message['data']
         if message['message_type'] == 'add_client':
             callsign = data['callsign']
-            # strip callsign to first 4 characters for comparing / filtering
+            # strip callsign to last 4 characters for comparing / filtering
             strippedcall = callsign[-4:]
             # strip callsign to last 4 characters to filter out ATIS
             atischecker = callsign[-4:]
-            print("DEBUG: STRIPPED CALL: " + strippedcall)
-            print("DEBUG: ATISCHECKER: " + atischecker)
+            # print("DEBUG: STRIPPED CALL: " + strippedcall)
+            # print("DEBUG: ATISCHECKER: " + atischecker)
             if strippedcall in messagefilter and atischecker != "ATIS":
                 timestamp = str(datetime.now())
                 member = data['member']
@@ -125,7 +125,7 @@ def vatsim_notifier():
                 # print(prettyprint)
                 # print(data)
                 print("[" + timestamp + "] - " + name + "[" + rating_long + "] (" + cid + ") has opened " + callsign + " on VATSIM.")
-                # discord_webhook(callsign, name, cid, rating_long, server, status)
+                discord_webhook(callsign, name, cid, rating_long, server, status)
             else:
                 pass
         else:
@@ -154,7 +154,6 @@ def vatsim_notifier():
         #         # print(data)
         #         print("[" + timestamp + "] - " + callsign + " has closed.")
         #         discord_webhook(callsign, None, None, None, None, status)
-
         #     else:
         #         pass
         # else:
