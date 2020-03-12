@@ -31,7 +31,7 @@ def discord_webhook(callsign, name, cid, rating_long, server, status):
         embed = DiscordEmbed(title=callsign + " - Online", color=65290)
         embed.set_footer(text='ZDC VATSIM Notify Bot', icon_url='https://vzdc.org/photos/discordbot.png')
         # embed.set_thumbnail(url='https://vzdc.org/photos/logo.png')
-        # embed.set_timestamp()
+        embed.set_timestamp()
         embed.add_embed_field(name='Name', value=name)
         embed.add_embed_field(name='Rating', value=rating_long)
         embed.add_embed_field(name='CID', value=cid)
@@ -39,7 +39,9 @@ def discord_webhook(callsign, name, cid, rating_long, server, status):
         embed.add_embed_field(name='Server', value=server)
 
         webhook.add_embed(embed)
-        response = webhook.execute()
+        webhook.execute()
+        webhook.remove_embed(0)
+
     else:
         embed = DiscordEmbed(title=callsign + " - Offline", description=callsign + ' is now offline on the VATSIM network.', color=16711683)
         embed.set_footer(text='ZDC VATSIM Notify Bot', icon_url='https://vzdc.org/photos/discordbot.png')
@@ -52,7 +54,9 @@ def discord_webhook(callsign, name, cid, rating_long, server, status):
         # embed.add_embed_field(name='Server', value=server)
 
         webhook.add_embed(embed)
-        response = webhook.execute()
+        webhook.execute()
+        webhook.remove_embed(0)
+
         pass
 
 
