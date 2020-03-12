@@ -31,7 +31,6 @@ messagefilter = ['DCA_','IAD_','BWI_','PCT_','ADW_','DC_C','RIC_','ROA_','ORF_',
 def discord_webhook(callsign, name, cid, rating_long, server, status):
 
     webhook = DiscordWebhook(url=webhookurl)
-    timestamp = str(datetime.now())
 
     if status == "online":
         embed = DiscordEmbed(title=callsign + " - Online", description=callsign + ' is now online on the VATSIM network.', color=65290)
@@ -45,7 +44,9 @@ def discord_webhook(callsign, name, cid, rating_long, server, status):
         embed.add_embed_field(name='Server', value=server)
 
         webhook.add_embed(embed)
-        response = webhook.execute()
+        webhook.execute()
+        webhook.remove_embed(0)
+        
     else:
         embed = DiscordEmbed(title=callsign + " - Offline", description=callsign + ' is now offline on the VATSIM network.', color=16711683)
         embed.set_footer(text='ZDC VATSIM Notify Bot', icon_url='https://vzdc.org/photos/discordbot.png')
@@ -58,7 +59,8 @@ def discord_webhook(callsign, name, cid, rating_long, server, status):
         #embed.add_embed_field(name='Server', value=server)
 
         webhook.add_embed(embed)
-        response = webhook.execute()
+        webhook.execute()
+        webhook.remove_embed(0)
 
 
 def vatsim_rating_checker(rating):
@@ -107,7 +109,6 @@ def vatsim_notifier():
     print("[" + timestamp + "] - Notifer Started!")
     # Evaluate results for callsign sign in and outs. FOR LOOP
     for message in consumer:
-        timestamp = str(datetime.now())
         message = message.value
         data = message['data']
         if message['message_type'] == 'add_client':
