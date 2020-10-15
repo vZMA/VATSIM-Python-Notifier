@@ -2,6 +2,7 @@
 # Written by: Aaron Albertson
 # Copywritten - 2020 Aaron Albertson
 # Version: 1.0 - 3/10/2020
+# Version: 1.1 - 10/14/2020 - Adjusted parsing code for new format from new kafka feed to work again.
 
 import json
 import os
@@ -13,9 +14,9 @@ from kafka.errors import BrokerNotAvailableError, NoBrokersAvailable
 from discord_webhook import DiscordWebhook, DiscordEmbed
 
 # Variables
-k_topic = 'datafeed'
-k_servers = 'kafka-datafeed.vatsim.net:9092'
 load_dotenv()
+k_topic = os.getenv('KTOPIC')
+k_servers = os.getenv('KSERVERS')
 token = str(os.getenv('DISCORD_TOKEN'))
 dischannel = os.getenv('TEXT_CHANNEL')
 webhookurl = os.getenv('WEBHOOK_URL')
@@ -110,9 +111,10 @@ def vatsim_notifier():
     # Evaluate results for callsign sign in and outs. FOR LOOP
     for message in consumer:
         message = message.value
-        data = message['data']
-        if message['message_type'] == 'add_client':
-            callsign = data['callsign']
+        msgtype = message['$type']
+        # print (message)
+        if msgtype == 'VATSIM.Network.Dataserver.Dtos.AddClientDto, VATSIM.Network.Dataserver':
+            callsign = message['callsign']
             # strip callsign to first 4 characters for comparing / filtering
             strippedcall = callsign[:4]
             # strip callsign to last 4 characters to filter out ATIS
@@ -121,14 +123,14 @@ def vatsim_notifier():
             # print("DEBUG: ATISCHECKER: " + atischecker)
             if strippedcall in messagefilter and atischecker != "ATIS":
                 timestamp = str(datetime.now())
-                member = data['member']
-                cid = str(member['cid'])
-                name = member['name']
-                callsign = data['callsign']
-                rating = data['rating']
+                cid = str(message['cid'])
+                name = message['real_name']
+                callsign = message['callsign']
+                rating = message['rating']
                 vatsim_rating_checker(rating)
-                server = data['server']
+                server = message['server']
                 status = "online"
+                # DEBUG 
                 # prettyprint = json.dumps(message, indent=4, separators=(',',':'))
                 # print(prettyprint)
                 # print(data)
@@ -138,8 +140,9 @@ def vatsim_notifier():
                 pass
         else:
             pass
-        if message['message_type'] == 'remove_client':
-            callsign = data['callsign']
+        if msgtype == 'VATSIM.Network.Dataserver.Dtos.RemoveClientDto, VATSIM.Network.Dataserver':
+            # print (message)
+            callsign = message['callsign']
             # strip callsign to first 4 characters for comparing / filtering
             strippedcall = callsign[:4]
             # strip callsign to last 4 characters to filter out ATIS
@@ -148,17 +151,11 @@ def vatsim_notifier():
             # print("DEBUG: ATISCHECKER: " + atischecker)
             if strippedcall in messagefilter and atischecker != "ATIS":
                 timestamp = str(datetime.now())
-                member = data['member']
-                cid = str(member['cid'])
-                name = member['name']
-                callsign = data['callsign']
-                rating = data['rating']
-                vatsim_rating_checker(rating)
-                server = data['server']
+                callsign = message['callsign']
                 status = "offline"
+                # DEBUG
                 # prettyprint = json.dumps(message, indent=4, separators=(',',':'))
                 # print(prettyprint)
-                # print(data)
                 print("[" + timestamp + "] - " + callsign + " has closed.")
                 discord_webhook(callsign, None, None, None, None, status)
 
