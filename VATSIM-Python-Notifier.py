@@ -15,6 +15,7 @@ from kafka.errors import BrokerNotAvailableError, NoBrokersAvailable
 from discord_webhook import DiscordWebhook, DiscordEmbed
 
 # Variables
+version = "v1.2"
 load_dotenv()
 k_topic = os.getenv('KTOPIC')
 k_servers = os.getenv('KSERVERS')
@@ -36,7 +37,7 @@ def discord_webhook(callsign, name, cid, rating_long, server, status):
 
     if status == "online":
         embed = DiscordEmbed(title=callsign + " - Online", description=callsign + ' is now online on the VATSIM network.', color=65290)
-        embed.set_footer(text='ZDC VATSIM Notify Bot', icon_url='https://vzdc.org/photos/discordbot.png')
+        embed.set_footer(text='ZDC VATSIM Notify Bot ' + version, icon_url='https://vzdc.org/photos/discordbot.png')
         embed.set_thumbnail(url='https://vzdc.org/photos/logo.png')
         embed.set_timestamp()
         embed.add_embed_field(name='Name', value=name)
@@ -51,7 +52,7 @@ def discord_webhook(callsign, name, cid, rating_long, server, status):
         
     else:
         embed = DiscordEmbed(title=callsign + " - Offline", description=callsign + ' is now offline on the VATSIM network.', color=16711683)
-        embed.set_footer(text='ZDC VATSIM Notify Bot', icon_url='https://vzdc.org/photos/discordbot.png')
+        embed.set_footer(text='ZDC VATSIM Notify Bot ' + version, icon_url='https://vzdc.org/photos/discordbot.png')
         embed.set_thumbnail(url='https://vzdc.org/photos/logo.png')
         embed.set_timestamp()
         #embed.add_embed_field(name='Name', value=name)
@@ -108,7 +109,7 @@ def vatsim_notifier():
 
     # Notify Console script started
     timestamp = str(datetime.now())
-    print("[" + timestamp + "] - Notifer Started!")
+    print("[" + timestamp + "] - Notifer " + version + " Started!")
     # Evaluate results for callsign sign in and outs. FOR LOOP
     for message in consumer:
         message = message.value
