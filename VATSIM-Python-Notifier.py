@@ -121,7 +121,7 @@ def vatsim_notifier():
             atischecker = callsign[-4:]
             # print("DEBUG: STRIPPED CALL: " + strippedcall)
             # print("DEBUG: ATISCHECKER: " + atischecker)
-            if strippedcall in messagefilter and atischecker != "ATIS":
+            if strippedcall in messagefilter and atischecker != "ATIS" and atischecker != "_OBS":
                 timestamp = str(datetime.now())
                 cid = str(message['cid'])
                 name = message['real_name']
@@ -149,7 +149,7 @@ def vatsim_notifier():
             atischecker = callsign[-4:]
             # print("DEBUG: STRIPPED CALL: " + strippedcall)
             # print("DEBUG: ATISCHECKER: " + atischecker)
-            if strippedcall in messagefilter and atischecker != "ATIS":
+            if strippedcall in messagefilter and atischecker != "ATIS" and atischecker != "_OBS":
                 timestamp = str(datetime.now())
                 callsign = message['callsign']
                 status = "offline"
