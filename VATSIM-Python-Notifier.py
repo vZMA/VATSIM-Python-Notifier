@@ -3,6 +3,7 @@
 # Copywritten - 2020 Aaron Albertson
 # Version: 1.0 - 3/10/2020
 # Version: 1.1 - 10/14/2020 - Adjusted parsing code for new format from new kafka feed to work again.
+# Version: 1.2 - 10/28/2020 - Added filter to not display _OBS callsigns in open or close messages.
 
 import json
 import os
