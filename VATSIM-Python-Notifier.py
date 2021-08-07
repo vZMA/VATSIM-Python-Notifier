@@ -24,73 +24,76 @@ dischannel = os.getenv('TEXT_CHANNEL')
 webhookurl = os.getenv('WEBHOOK_URL')
 global rating_long
 # Check message filter here to meet first 4 characters of what to eval in add_clients / remove_clients
-messagefilter = ['DCA_','IAD_','BWI_','PCT_','ADW_','DC_C','RIC_','ROA_','ORF_','ACY_','NGU_',
-                'NTU_','NHK_','RDU_','CHO_','HGR_','LYH_','EWN_','LWB_','ISO_','MTN_','HEF_',
-                'MRB_','PHF_','SBY_','NUI_','FAY_','ILM_','NKT_','NCA_','NYG_','DAA_','DOV_',
-                'POB_','GSB_','WAL_','CVN_','DC_0','DC_1','DC_2','DC_3','DC_5','DC_N',
-                'DC_S','DC_E','DC_W','DC_I','JYO_']
-# Defs
+zdcMessageFilter = ['DCA_', 'IAD_', 'BWI_', 'PCT_', 'ADW_', 'DC_C', 'RIC_', 'ROA_', 'ORF_', 'ACY_', 'NGU_', 'NTU_',
+    'NHK_', 'RDU_', 'CHO_', 'HGR_', 'LYH_', 'EWN_', 'LWB_', 'ISO_', 'MTN_', 'HEF_', 'MRB_', 'PHF_', 'SBY_', 'NUI_',
+    'FAY_', 'ILM_', 'NKT_', 'NCA_', 'NYG_', 'DAA_', 'DOV_', 'POB_', 'GSB_', 'WAL_', 'CVN_', 'DC_0', 'DC_1', 'DC_2',
+    'DC_3', 'DC_5', 'DC_N', 'DC_S', 'DC_E', 'DC_W', 'DC_I', 'JYO_']
+zmaMessageFilter = ['MIA_', 'TPA_', 'PBI_', 'RSW_', 'NQX_', 'FLL_', 'TMB_', 'OPF_', 'EYW_', 'SRQ_', '6FA_', 'APF_', 'BCT_',
+    'BKV_', 'BOW_', 'FMY_', 'FPR_', 'FXE_', 'HST_', 'LAL_', 'MCF_', 'PIE_', 'PGD_', 'PMP_', 'SPG_', 'SUA_', 'ZMO_']
+zmoMessageFilter = ['MYNN', 'CARI', 'ZMO_']
+activeMessageFilter = zmaMessageFilter
 
+# Defs
 def discord_webhook(callsign, name, cid, rating_long, server, status):
 
     webhook = DiscordWebhook(url=webhookurl)
 
     if status == "online":
-        embed = DiscordEmbed(title=callsign + " - Online", description=callsign + ' is now online on the VATSIM network.', color=65290)
-        embed.set_footer(text='ZDC VATSIM Notify Bot ' + version, icon_url='https://vzdc.org/photos/discordbot.png')
+        # build signon message
+        embed = DiscordEmbed(title=callsign + " OPEN", description=callsign + ' was opened by **' + name + ' (' + rating ')**', color=65290)
+        embed.set_footer(text='VATSIM Notify Bot ' + version + ', credit: vZDC\'s Aaron Albertson', icon_url='https://vzdc.org/photos/discordbot.png')
         embed.set_thumbnail(url='https://vzdc.org/photos/logo.png')
         embed.set_timestamp()
-        embed.add_embed_field(name='Name', value=name)
-        embed.add_embed_field(name='Rating', value=rating_long)
-        embed.add_embed_field(name='CID', value=cid)
-        embed.add_embed_field(name='Callsign', value=callsign)
-        embed.add_embed_field(name='Server', value=server)
 
+        # send signon message
         webhook.add_embed(embed)
         webhook.execute()
         webhook.remove_embed(0)
         
     else:
-        embed = DiscordEmbed(title=callsign + " - Offline", description=callsign + ' is now offline on the VATSIM network.', color=16711683)
-        embed.set_footer(text='ZDC VATSIM Notify Bot ' + version, icon_url='https://vzdc.org/photos/discordbot.png')
+        # build signoff message
+        embed = DiscordEmbed(title=callsign + " CLOSED", description=callsign + ' is now closed (**' + name + '**)', color=16711683)
+        embed.set_footer(text='VATSIM Notify Bot ' + version, icon_url='https://vzdc.org/photos/discordbot.png')
         embed.set_thumbnail(url='https://vzdc.org/photos/logo.png')
         embed.set_timestamp()
-        #embed.add_embed_field(name='Name', value=name)
-        #embed.add_embed_field(name='Rating', value=rating_long)
-        #embed.add_embed_field(name='CID', value=cid)
-        #embed.add_embed_field(name='Callsign', value=callsign)
-        #embed.add_embed_field(name='Server', value=server)
 
+        # send signoff message
         webhook.add_embed(embed)
         webhook.execute()
         webhook.remove_embed(0)
 
+ratingDictionary = { 1:= "OBS", 2:= "S1", 3:= "S2", 4:= "S3", 5:= "C1", 6:= "C2", 7:= "C3", 8:= "I1", 9:= "I2", 10: "I3", 11: "SUP", 12: "ADM" }
+def getRatingFromNumber(ratingNumber):
+    if ! (ratingNumber in ratingDictionary):
+        return None
+    return ratingDictionary[ratingNumber]
 
-def vatsim_rating_checker(rating):
+
+def vatsim_rating_checker(ratingNumber):
     global rating_long
-    if rating == 1:
+    if ratingNumber == 1:
         rating_long = "OBS"
-    if rating == 2:
+    if ratingNumber == 2:
         rating_long = "S1"
-    if rating == 3:
+    if ratingNumber == 3:
         rating_long = "S2"
-    if rating == 4:
+    if ratingNumber == 4:
         rating_long = "S3"
-    if rating == 5:
+    if ratingNumber == 5:
         rating_long = "C1"
-    if rating == 6:
+    if ratingNumber == 6:
         rating_long = "C2"
-    if rating == 7:
+    if ratingNumber == 7:
         rating_long = "C3"
-    if rating == 8:
+    if ratingNumber == 8:
         rating_long = "I1"
-    if rating == 9:
+    if ratingNumber == 9:
         rating_long = "I2"
-    if rating == 10:
+    if ratingNumber == 10:
         rating_long = "I3"
-    if rating == 11:
+    if ratingNumber == 11:
         rating_long = "SUP"
-    if rating == 12:
+    if ratingNumber == 12:
         rating_long = "ADM"
     else:
         pass
@@ -123,7 +126,7 @@ def vatsim_notifier():
             atischecker = callsign[-4:]
             # print("DEBUG: STRIPPED CALL: " + strippedcall)
             # print("DEBUG: ATISCHECKER: " + atischecker)
-            if strippedcall in messagefilter and atischecker != "ATIS" and atischecker != "_OBS":
+            if strippedcall in activeMessageFilter and atischecker != "ATIS" and atischecker != "_OBS":
                 timestamp = str(datetime.now())
                 cid = str(message['cid'])
                 name = message['real_name']
@@ -151,7 +154,7 @@ def vatsim_notifier():
             atischecker = callsign[-4:]
             # print("DEBUG: STRIPPED CALL: " + strippedcall)
             # print("DEBUG: ATISCHECKER: " + atischecker)
-            if strippedcall in messagefilter and atischecker != "ATIS" and atischecker != "_OBS":
+            if strippedcall in activeMessageFilter and atischecker != "ATIS" and atischecker != "_OBS":
                 timestamp = str(datetime.now())
                 callsign = message['callsign']
                 status = "offline"
